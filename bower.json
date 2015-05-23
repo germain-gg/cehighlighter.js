@@ -1,0 +1,30 @@
+{
+  "name": "cehighlighter.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/gsouquet/cehighlighter.js",
+  "authors": [
+    "Germain Souquet <germain.souquet@gmail.com>"
+  ],
+  "description": "Lightweight javascript library to enable syntax highlighting for contenteditable",
+  "main": "cehighlighter.js",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "contenteditable",
+    "content",
+    "editable",
+    "syntax",
+    "highlighting"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
