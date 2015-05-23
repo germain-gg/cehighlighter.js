@@ -43,8 +43,23 @@ var highlighter = new CEHighlighter(el);
  */
 highlighter.getCaretPosition();
 highlighter.setCaretPosition(0);
+highlighter.on('evtName', callback);
+highlighter.unbind('evtName');
 highlighter.getLength();
 highlighter.destroy();
+```
+
+## Events
+
+- change
+- destroy
+
+Example:
+
+```js
+highlighter.on('change', function(evt) {
+	alert('Char count: ' + this.getLength());
+});
 ```
 
 ## MIT License

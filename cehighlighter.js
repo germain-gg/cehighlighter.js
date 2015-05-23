@@ -172,6 +172,16 @@
     };
 
     /**
+     * Check if parameter is undefined
+     * @private
+     * @param {object} val
+     * @returns {boolean} isUndefined
+     */
+    utils.isUndefined = function(val) {
+        return void 0 === val;
+    };
+
+    /**
      * Will go through all the
      * @private
      * @param {Object} node
@@ -196,6 +206,11 @@
             { pattern: /((https?):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, template: '<span class="url">$1</span>' },
             { pattern: /(@([a-z\d_]+))/gi, template: '<span class="mention">$1</span>' }
         ]
+    };
+
+    var events = {
+        'change': undefined,
+        'destroy': undefined
     };
 
     /**
@@ -227,7 +242,6 @@
 
         	// Let's insert the text in the DOM
         	this.el.innerHTML = html.substring(0, pos.start) + escapedPastedText + html.substr(pos.end);
-
             utils.highlight(this.el);
 
             var newCaretPosition = pos.start + escapedPastedText.length;
@@ -240,13 +254,42 @@
     var onInput = function (e) {
     	// Defer till the event is processed
     	var _this = this;
+        var _args = arguments;
     	setTimeout(function() {
             var charPos = utils.getCaretOffsetWithin(_this.el);
             // Perform all the syntax highlighting
             utils.highlight(_this.el);
     		// Set the caret back at its original position
     		utils.setCaretPositionWithin(_this.el, charPos.start);
+
+            trigger('change', _this, _args);
     	}, 0);
+    };
+
+    var attachEvent = function(evtName, callback) {
+        if (events.hasOwnProperty(evtName)) {
+            if (typeof callback === 'function') {
+                events[evtName] = callback;
+            } else {
+                throw new Error('Event callback must be a function');
+            }
+        } else {
+            throw new Error('No support for the event: ' + evtName);
+        }
+    };
+
+    var detachEvent = function(evtName) {
+        if (events.hasOwnProperty(evtName)) {
+            events[evtName] = undefined;
+        } else {
+            throw new Error('No support for the event: ' + evtName);
+        }
+    };
+
+    var trigger = function(evtName, ctx, args) {
+        if (!utils.isUndefined(events[evtName])) {
+            events[evtName].apply(ctx, args);
+        }
     };
 
     /**
@@ -282,11 +325,20 @@
         return this.el.innerText.length;
     };
 
+    CEHighlighter.prototype.on = function(evtName, callback) {
+        attachEvent.apply(this, arguments);
+    };
+
+    CEHighlighter.prototype.unbind = function(evtName) {
+        detachEvent(evtName);
+    };
+
     CEHighlighter.prototype.destroy = function() {
         this.el.removeAttribute('contenteditable');
-        this.e.className.remove(settings.className);
+        this.el.classList.remove(settings.className);
     	this.el.removeEventListener('paste', onPaste.bind(this));
 		this.el.removeEventListener('input', onInput.bind(this));
+        trigger('destroy', this);
     };
 
     return CEHighlighter;
