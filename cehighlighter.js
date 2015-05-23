@@ -223,12 +223,14 @@
 
         	var pos = utils.getCaretOffsetWithin(this.el);
         	var html = this.el.innerText;
+            var escapedPastedText = utils.escapeHTML(input.value);
 
         	// Let's insert the text in the DOM
-        	this.el.innerHTML = html.substring(0, pos.start) + input.value + html.substr(pos.end);
+        	this.el.innerHTML = html.substring(0, pos.start) + escapedPastedText + html.substr(pos.end);
 
-        	var newCaretPosition = pos.start + input.value.length;
             utils.highlight(this.el);
+
+            var newCaretPosition = pos.start + escapedPastedText.length;
             utils.setCaretPositionWithin(this.el, newCaretPosition);
         }
 
