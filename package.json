@@ -1,0 +1,31 @@
+{
+  "name": "cehighlighter.js",
+  "version": "0.0.1",
+  "description": "Lightweight javascript library to enable syntax highlighting for contenteditable",
+  "main": "cehighlighter.js",
+  "scripts": {
+    "test": "grunt default --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gsouquet/cehighlighter.js.git"
+  },
+  "keywords": [
+    "contenteditable",
+    "content",
+    "editable",
+    "syntax",
+    "highlighting"
+  ],
+  "author": "Germain Souquet <germain.souquet@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gsouquet/cehighlighter.js/issues"
+  },
+  "homepage": "https://github.com/gsouquet/cehighlighter.js",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jasmine": "^0.8.2",
+    "grunt-contrib-uglify": "^0.9.1"
+  }
+}

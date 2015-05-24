@@ -110,38 +110,42 @@
      */
     utils.setCaretPositionWithin = function(node, index) {
 
-        var treeWalker = utils.createTreeWalker(node);
-        var currentPos = 0;
+        if (utils.isNumber(index) && index >= 0) {
+            var treeWalker = utils.createTreeWalker(node);
+            var currentPos = 0;
 
-        while(treeWalker.nextNode()) {
+            while(treeWalker.nextNode()) {
 
-            // while we don't reach the node that contains
-            // our index we increment `currentPos`
-            currentPos += treeWalker.currentNode.length;
+                // while we don't reach the node that contains
+                // our index we increment `currentPos`
+                currentPos += treeWalker.currentNode.length;
 
-            if (currentPos >= index) {
+                if (currentPos >= index) {
 
-                // offset is relative to the current html element
-                // We get the value before reaching the node that goes
-                // over the thresold and then calculate the offset
-                // within the current node.
-                var prevValue = currentPos - treeWalker.currentNode.length;
-                var offset = index - prevValue;
+                    // offset is relative to the current html element
+                    // We get the value before reaching the node that goes
+                    // over the thresold and then calculate the offset
+                    // within the current node.
+                    var prevValue = currentPos - treeWalker.currentNode.length;
+                    var offset = index - prevValue;
 
-                // create a new range that will set the caret
-                // at the good position
-                var range = document.createRange();
-                range.setStart(treeWalker.currentNode, offset);
-                range.collapse(true);
+                    // create a new range that will set the caret
+                    // at the good position
+                    var range = document.createRange();
+                    range.setStart(treeWalker.currentNode, offset);
+                    range.collapse(true);
 
-                // Update the selection to reflect the range
-                // change on the UI
-                var sel = window.getSelection();
-                sel.removeAllRanges();
-                sel.addRange(range);
+                    // Update the selection to reflect the range
+                    // change on the UI
+                    var sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
 
-                break;
+                    break;
+                }
             }
+        } else {
+            throw new Error('Invalid `index` parameter: ' + index);
         }
     };
 
@@ -184,6 +188,10 @@
     utils.isUndefined = function(val) {
         return void 0 === val;
     };
+
+    utils.isNumber = function(n) {
+        return typeof n === 'number' && n % 1 === 0;
+    }
 
     /**
      * Will go through all the
@@ -266,7 +274,6 @@
             utils.highlight(_this.el);
     		// Set the caret back at its original position
     		utils.setCaretPositionWithin(_this.el, charPos.start);
-
             trigger('change', _this);
     	}, 0);
     };
@@ -329,6 +336,14 @@
 
         if (!supports) {
             throw new Error('CEHighlighter does not support that browser');
+        }
+
+        if (!(el instanceof HTMLElement)) {
+            throw new Error('Invalid `el` argument, HTMLElement required');
+        }
+
+        if (!utils.isUndefined(options) && !(options instanceof Object)) {
+            throw new Error('Invalid `options` argument, object required');
         }
 
         utils.extend(settings, options);
