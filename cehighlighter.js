@@ -168,11 +168,11 @@
      */
     utils.escapeHTML = function(unsafeText) {
         return unsafeText
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
     };
 
     /**
@@ -205,6 +205,7 @@
 
     var settings = {
         className: 'cehighlighter',
+        elastic: true,
         regexs: [
             { pattern: /(^|\s)(#[a-z\d-]+)/gi, template: '$1<span class="hashtag">$2</span>' },
             { pattern: /((https?):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, template: '<span class="url">$1</span>' },
@@ -335,7 +336,17 @@
     	this.el = el;
         this.el.setAttribute('contenteditable', 'true');
         this.el.classList.add(settings.className);
-        this.el.style.whiteSpace = "pre-wrap";
+        this.el.style.whiteSpace = 'pre-wrap';
+        this.el.style.outline = 'none';
+
+        if (settings.elastic === true) {
+            this.el.style.display = 'inline-block';
+            this.el.style.minHeight = this.el.offsetHeight + 'px';
+            this.el.style.height = 'auto';
+        } else {
+            this.el.style.height = this.el.offsetHeight + 'px';
+            this.el.style.overflow = 'auto';
+        }
 
         this.el.addEventListener('paste', onPaste.bind(this));
 		this.el.addEventListener('input', onInput.bind(this));

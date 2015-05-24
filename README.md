@@ -21,6 +21,7 @@ CEHighlighter.js accepts as a second optional argument an `option` object
 // defaults
 {
 	className: 'cehighlighter',
+	elastic: true, // let the contenteditable grow with the content.
     regexs: [
         { pattern: /(^|\s)(#[a-z\d-]+)/gi, template: '$1<span class="hashtag">$2</span>' },
         { pattern: /((https?):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?)/gi, template: '<span class="url">$1</span>' },
