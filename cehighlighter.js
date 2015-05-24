@@ -24,6 +24,10 @@
 
     var utils = {};
 
+    var KEYS = {
+        ENTER: 13
+    };
+
     /**
      * Merge defaults with user options
      * @private
@@ -262,9 +266,33 @@
     		// Set the caret back at its original position
     		utils.setCaretPositionWithin(_this.el, charPos.start);
 
-            trigger('change', _this, _args);
+            trigger('change', _this);
     	}, 0);
     };
+
+    var onKeyPress = function (e) {
+
+        // Browsers inserts html el on line-break
+        // Chrome: 'div', FX: 'br', IE: 'p'
+        // We only insert '\r\n' and
+        // let css 'white-space: pre-wrap' do the rest
+        // IE a `p`
+        if (e.which === KEYS.ENTER) {
+
+            var pos = utils.getCaretOffsetWithin(this.el);
+            var html = this.el.innerText;
+
+            // Let's insert the text in the DOM
+            this.el.innerHTML = html.substring(0, pos.start) + '\r\n' + html.substr(pos.end);
+            utils.highlight(this.el);
+            utils.setCaretPositionWithin(this.el, pos.start + 1);
+
+            // `preventDefault()` will stop the propagation of the event
+            // `input` event won't be triggerred.
+            trigger('change', this);
+            e.preventDefault();
+        }
+    }
 
     var attachEvent = function(evtName, callback) {
         if (events.hasOwnProperty(evtName)) {
@@ -307,9 +335,11 @@
     	this.el = el;
         this.el.setAttribute('contenteditable', 'true');
         this.el.classList.add(settings.className);
+        this.el.style.whiteSpace = "pre-wrap";
 
         this.el.addEventListener('paste', onPaste.bind(this));
 		this.el.addEventListener('input', onInput.bind(this));
+        this.el.addEventListener('keypress', onKeyPress.bind(this));
     	return this;
     };
 

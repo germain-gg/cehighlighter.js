@@ -57,7 +57,7 @@ highlighter.destroy();
 Example:
 
 ```js
-highlighter.on('change', function(evt) {
+highlighter.on('change', function() {
 	alert('Char count: ' + this.getLength());
 });
 ```
