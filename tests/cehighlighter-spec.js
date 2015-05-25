@@ -65,20 +65,18 @@ describe('getLength() suite', function() {
 
 describe('on() / unbind() suite', function() {
 
-	var el = document.createElement('div');
-	document.body.appendChild(el);
-	var ce = new CEHighlighter(el);
-	var params;
+	var el, ce, params;
 	beforeEach(function() {
+
+		el = document.createElement('div');
+		document.body.appendChild(el);
+		ce = new CEHighlighter(el);
+
+		var evt = document.createEvent('Event');
+		evt.initEvent("input", true, true);
+
 		params = {
-			evt: new Event('input', {
-				bubbles: true, cancelBubble: false, cancelable: false,
-				eventPhase: 0, defaultPrevented: false,
-				currentTarget: null, returnValue: true,
-				srcElement: el, target: el,
-				timestamp: (new Date()).getTime(), type: 'input',
-				path: [el, document.body, document.documentElement, document, window]
-			}),
+			e: evt,
 			callback: function() {
 				console.log('called');
 			}
@@ -88,12 +86,17 @@ describe('on() / unbind() suite', function() {
 	});
 
 	afterEach(function() {
+		ce.destroy();
+		document.body.removeChild(el);
+		el = null;
+		ce = null;
+		params = null;
 		jasmine.clock().uninstall();
 	});
 
 	it('test binding `change` event', function() {
 		ce.on('change', params.callback);
-        el.dispatchEvent(params.evt);
+        el.dispatchEvent(params.e);
         jasmine.clock().tick(0);
 	    expect(params.callback).toHaveBeenCalled();
 	});
@@ -101,7 +104,7 @@ describe('on() / unbind() suite', function() {
 	it('test unbinding `change` event', function() {
 		ce.on('change', params.callback);
 		ce.unbind('change');
-        el.dispatchEvent(params.evt);
+        el.dispatchEvent(params.e);
         jasmine.clock().tick(0);
 	    expect(params.callback).not.toHaveBeenCalled();
 	});
@@ -110,35 +113,30 @@ describe('on() / unbind() suite', function() {
 
 describe('getCaretPosition() suite', function() {
 
-	var el, ce, _sel;
+	var el, ce;
 	beforeEach(function() {
 		el = document.createElement('div');
 		el.innerHTML = "Hello <span>World</span>! How <span>are</span> you today?";
 		document.body.appendChild(el);
 		ce = new CEHighlighter(el);
-
-		_sel = window.getSelection;
 	});
 
 	afterEach(function() {
 		ce.destroy();
 		document.body.removeChild(el);
-		window.getSelection = _sel;
+		el = null;
+		ce = null;
 	});
 
 	it('collapsed selection', function() {
 
-		window.getSelection = function() {
-			return {
-				anchorNode: el.childNodes[1].firstChild,
-				anchorOffset: 1,
-				focusNode: el.childNodes[1].firstChild,
-				focusOffset: 1,
-				isCollapsed: true,
-				rangeCount: 1,
-				type: 'Caret'
-			};
-		};
+        var range = document.createRange();
+        range.setStart(el.childNodes[1].firstChild, 1);
+        range.collapse(true);
+
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
 
 		var position = ce.getCaretPosition();
 
@@ -148,17 +146,14 @@ describe('getCaretPosition() suite', function() {
 
 	it('selection across multiple node', function() {
 
-		window.getSelection = function() {
-			return {
-				anchorNode: el.childNodes[1].firstChild,
-				anchorOffset: 1,
-				focusNode: el.childNodes[3].firstChild,
-				focusOffset: 2,
-				isCollapsed: false,
-				rangeCount: 1,
-				type: 'Caret'
-			};
-		};
+        var range = document.createRange();
+        range.collapse(false);
+        range.setStart(el.childNodes[1].firstChild, 1);
+        range.setEnd(el.childNodes[3].firstChild, 2);
+
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
 
 		var position = ce.getCaretPosition();
 
@@ -176,14 +171,11 @@ describe('setCaretPosition() suite', function() {
 		el.innerHTML = "Hello <span>World</span>! How <span>are</span> you today?";
 		document.body.appendChild(el);
 		ce = new CEHighlighter(el);
-
-		_sel = window.getSelection;
 	});
 
 	afterEach(function() {
 		ce.destroy();
 		document.body.removeChild(el);
-		window.getSelection = _sel;
 	});
 
 	it('invalid arguments', function() {
@@ -201,8 +193,15 @@ describe('setCaretPosition() suite', function() {
 		}).not.toThrow();
 	});
 
-	/**
-	 * Work in progress here
-	 */
+	it('set index to be 7', function() {
+
+		ce.setCaretPosition(7);
+
+		var sel = window.getSelection();
+
+		expect(sel.isCollapsed).toEqual(true);
+		expect(sel.anchorNode).toEqual(el.childNodes[1].firstChild);
+		expect(sel.anchorOffset).toEqual(1);
+	});
 
 });

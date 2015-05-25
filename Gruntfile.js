@@ -7,8 +7,8 @@ module.exports = function(grunt) {
 	      src: 'cehighlighter.js',
 	      options: {
 	        specs: 'tests/*-spec.js',
-	        helpers: 'tests/*-helper.js',
-	        outfile: 'tests/_SpecRunner.html'
+	        outfile: 'tests/_SpecRunner.html',
+	        keepRunner: true
 	      }
 	    }
 	  },
@@ -29,4 +29,5 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 
 	grunt.registerTask('default', ['jasmine', 'uglify']);
+	grunt.registerTask('test', ['jasmine']);
 };
