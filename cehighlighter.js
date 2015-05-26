@@ -259,6 +259,8 @@
 
             var newCaretPosition = pos.start + escapedPastedText.length;
             utils.setCaretPositionWithin(this.el, newCaretPosition);
+
+            trigger('change', _this);
         }
 
         e.preventDefault();
