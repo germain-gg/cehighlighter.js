@@ -1,8 +1,8 @@
 # CEHighlighter.js
 
-CEHighlighter.js is a lightweight javascript library that enables simple syntax highlighting in HTML elements and turn them into content editable.
+CEHighlighter.js is a lightweight javascript library that enables simple syntax highlighting within a content editable element.
 
-By defaults it highlights links, twitter mentions and hashtags. It is possible to extend the syntax highlighting with your own regular expressions and templates.
+By default it highlights links, twitter mentions and hashtags. It is possible to extend the syntax highlighting with your own regular expressions and templates.
 
 Note: this library doesn't come with any style out of the box
 
