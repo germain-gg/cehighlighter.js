@@ -1,7 +1,7 @@
 {
   "name": "cehighlighter.js",
   "version": "0.0.1",
-  "description": "Lightweight javascript library to enable syntax highlighting for contenteditable",
+  "description": "Lightweight javascript library that enables simple syntax highlighting within a content editable element",
   "main": "cehighlighter.js",
   "scripts": {
     "test": "grunt default --verbose"

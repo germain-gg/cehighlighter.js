@@ -5,7 +5,7 @@
   "authors": [
     "Germain Souquet <germain.souquet@gmail.com>"
   ],
-  "description": "Lightweight javascript library to enable syntax highlighting for contenteditable",
+  "description": "Lightweight javascript library that enables simple syntax highlighting within a content editable element",
   "main": "cehighlighter.js",
   "moduleType": [
     "amd",
